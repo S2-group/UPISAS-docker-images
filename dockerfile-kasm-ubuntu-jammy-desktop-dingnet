@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-debian-bullseye"
+ARG BASE_IMAGE="core-ubuntu-jammy"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
@@ -7,6 +7,17 @@ USER root
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
+
+### Custom
+
+
+
+RUN apt-get update \
+    && apt-get install -y sudo \
+    && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && rm -rf /var/lib/apt/list/*
+
+
 
 ### Envrionment config
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -18,24 +29,17 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/misc/install_tools.sh \
                   /ubuntu/install/chrome/install_chrome.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
-                  /ubuntu/install/firefox/install_firefox.sh \
-                  /ubuntu/install/sublime_text/install_sublime_text.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
-                  /ubuntu/install/remmina/install_remmina.sh \
-                  /ubuntu/install/only_office/install_only_office.sh \
-                  /ubuntu/install/signal/install_signal.sh \
-                  /ubuntu/install/gimp/install_gimp.sh \
-                  /ubuntu/install/zoom/install_zoom.sh \
-                  /ubuntu/install/obs/install_obs.sh \
-                  /ubuntu/install/ansible/install_ansible.sh \
-                  /ubuntu/install/terraform/install_terraform.sh \
-                  /ubuntu/install/telegram/install_telegram.sh \
-                  /ubuntu/install/thunderbird/install_thunderbird.sh \
-                  /ubuntu/install/gamepad_utils/install_gamepad_utils.sh \
+                  /ubuntu/install/dingnet/install_jdk.sh \
+                  /ubuntu/install/dingnet/install_intellij.sh \
+                  /ubuntu/install/dingnet/install_dingnet.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
 COPY ./src/ $INST_DIR
+
+COPY ./src/ubuntu/patch/vnc_startup.sh $STARTUPDIR
+COPY ./src/ubuntu/patch/kasmvnc_defaults.yaml /usr/share/kasmvnc/
 
 # Run installations
 RUN \
@@ -54,4 +58,4 @@ ENV HOME /home/kasm-user
 WORKDIR $HOME
 USER 1000
 
-CMD ["--tail-log"] 
+CMD ["--tail-log"]
