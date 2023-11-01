@@ -26,6 +26,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/chrome/install_chrome.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
+                  /ubuntu/install/bsn/install_rosmelodic.sh \
+                  /ubuntu/install/bsn/install_bsn.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
